@@ -7,23 +7,19 @@ import { useFixedLinks } from "@/hooks/useFixedLinks";
 import { LinkCard } from "@/components/ui/aceternity-card";
 import { AceternityButton } from "@/components/ui/aceternity-button";
 import { ShortcutModal } from "@/components/ShortcutModal";
-import { ThemeToggle } from "@/components/common/ThemeToggle";
+import { MainNavigation } from "@/components/common/MainNavigation";
 import { 
   Plus, 
-  LogOut, 
   User, 
-  Settings,
   ExternalLink,
   Folder,
-  Clock,
-  Shield
+  Clock
 } from "lucide-react";
-import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingShortcut, setEditingShortcut] = useState(null);
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const { shortcuts, loading: shortcutsLoading, deleteShortcut } = useShortcuts();
   const { fixedLinks, loading: fixedLinksLoading } = useFixedLinks();
 
@@ -43,101 +39,69 @@ const Dashboard = () => {
     setEditingShortcut(null);
   };
 
-  // Check if user is admin (simple check by email)
-  const isAdmin = user?.email === 'admin@linkboard.com' || user?.email?.includes('admin');
-
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border/50 bg-card/30 backdrop-blur-md sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-3">
-              <motion.div
-                className="w-8 h-8 bg-gradient-to-r from-orange-500 to-blue-500 rounded-lg flex items-center justify-center"
-                animate={{ rotate: [0, 5, -5, 0] }}
-                transition={{ duration: 2, repeat: Infinity, repeatDelay: 5 }}
-              >
-                <ExternalLink className="w-4 h-4 text-white" />
-              </motion.div>
-              <div>
-                <h1 className="text-lg font-semibold">LinkBoard UI</h1>
-                <p className="text-xs text-muted-foreground">
-                  Bem-vindo, {user?.email}
-                </p>
+      {/* Floating Navigation */}
+      <MainNavigation onNewLink={() => setModalOpen(true)} />
+
+      {/* Hero Section */}
+      <section className="relative pt-24 pb-16">
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-blue-500/5" />
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <motion.div
+            className="text-center mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <motion.div
+              className="w-20 h-20 bg-gradient-to-r from-orange-500 to-blue-500 rounded-3xl flex items-center justify-center mx-auto mb-6"
+              animate={{ rotate: [0, 5, -5, 0] }}
+              transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
+            >
+              <ExternalLink className="w-10 h-10 text-white" />
+            </motion.div>
+            
+            <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-orange-500 to-blue-500 bg-clip-text text-transparent mb-4">
+              LinkBoard UI
+            </h1>
+            
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
+              Bem-vindo de volta, <span className="text-foreground font-medium">{user?.email?.split('@')[0]}</span>! 
+              Acesse rapidamente seus links e ferramentas favoritas.
+            </p>
+            
+            <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <Clock className="w-4 h-4" />
+                {new Date().toLocaleDateString('pt-BR', { 
+                  weekday: 'long', 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })}
               </div>
             </div>
-
-            <div className="flex items-center gap-3">
-              <AceternityButton
-                variant="outline"
-                size="sm"
-                onClick={() => setModalOpen(true)}
-                icon={<Plus className="w-4 h-4" />}
-              >
-                Novo Link
-              </AceternityButton>
-
-              {isAdmin && (
-                <Link to="/admin">
-                  <AceternityButton
-                    variant="secondary"
-                    size="sm"
-                    icon={<Shield className="w-4 h-4" />}
-                  >
-                    Admin
-                  </AceternityButton>
-                </Link>
-              )}
-
-              <ThemeToggle />
-
-              <AceternityButton
-                variant="ghost"
-                size="sm"
-                onClick={signOut}
-                icon={<LogOut className="w-4 h-4" />}
-              >
-                Sair
-              </AceternityButton>
-            </div>
-          </div>
+          </motion.div>
         </div>
-      </header>
+      </section>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Welcome Section */}
-        <motion.div
-          className="mb-8"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="flex items-center gap-3 mb-4">
-            <User className="w-5 h-5 text-orange-500" />
-            <h2 className="text-2xl font-bold">Dashboard</h2>
-            <div className="flex-1 border-t border-border" />
-            <span className="text-sm text-muted-foreground flex items-center gap-1">
-              <Clock className="w-4 h-4" />
-              {new Date().toLocaleDateString('pt-BR')}
-            </span>
-          </div>
-          <p className="text-muted-foreground">
-            Acesse rapidamente seus links e ferramentas favoritas.
-          </p>
-        </motion.div>
-
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         {/* Fixed Links Section */}
         <motion.section
-          className="mb-12"
+          className="mb-16"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
         >
-          <div className="flex items-center gap-2 mb-6">
-            <Folder className="w-5 h-5 text-blue-500" />
-            <h3 className="text-xl font-semibold">Links do Sistema</h3>
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-8 h-8 bg-blue-500/10 rounded-lg flex items-center justify-center">
+              <Folder className="w-4 h-4 text-blue-500" />
+            </div>
+            <h2 className="text-2xl font-bold">Links do Sistema</h2>
+            <div className="flex-1 border-t border-border/50" />
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -145,7 +109,7 @@ const Dashboard = () => {
               [...Array(4)].map((_, i) => (
                 <div
                   key={i}
-                  className="h-40 bg-muted/20 rounded-xl animate-pulse"
+                  className="h-48 bg-muted/20 rounded-xl animate-pulse"
                 />
               ))
             ) : (
@@ -154,7 +118,7 @@ const Dashboard = () => {
                   key={link.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 * index, duration: 0.3 }}
+                  transition={{ delay: 0.1 * index, duration: 0.4 }}
                 >
                   <LinkCard
                     title={link.title}
@@ -181,11 +145,13 @@ const Dashboard = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.5 }}
         >
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-2">
-              <User className="w-5 h-5 text-orange-500" />
-              <h3 className="text-xl font-semibold">Meus Links</h3>
-              <span className="px-2 py-1 bg-orange-500/10 text-orange-500 text-sm rounded-full">
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-orange-500/10 rounded-lg flex items-center justify-center">
+                <User className="w-4 h-4 text-orange-500" />
+              </div>
+              <h2 className="text-2xl font-bold">Meus Links</h2>
+              <span className="px-3 py-1 bg-orange-500/10 text-orange-500 text-sm rounded-full font-medium">
                 {shortcuts.length}
               </span>
             </div>
@@ -194,6 +160,7 @@ const Dashboard = () => {
               onClick={() => setModalOpen(true)}
               size="sm"
               icon={<Plus className="w-4 h-4" />}
+              className="hidden md:flex"
             >
               Adicionar Link
             </AceternityButton>
@@ -204,7 +171,7 @@ const Dashboard = () => {
               {[...Array(4)].map((_, i) => (
                 <div
                   key={i}
-                  className="h-40 bg-muted/20 rounded-xl animate-pulse"
+                  className="h-48 bg-muted/20 rounded-xl animate-pulse"
                 />
               ))}
             </div>
@@ -215,7 +182,7 @@ const Dashboard = () => {
                   key={shortcut.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 * index, duration: 0.3 }}
+                  transition={{ delay: 0.1 * index, duration: 0.4 }}
                 >
                   <LinkCard
                     title={shortcut.title}
@@ -238,17 +205,17 @@ const Dashboard = () => {
             </div>
           ) : (
             <motion.div
-              className="text-center py-12"
+              className="text-center py-16"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
             >
-              <div className="w-16 h-16 bg-muted/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Plus className="w-8 h-8 text-muted-foreground" />
+              <div className="w-20 h-20 bg-muted/20 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                <Plus className="w-10 h-10 text-muted-foreground" />
               </div>
-              <h4 className="text-lg font-medium mb-2">Nenhum link personalizado</h4>
-              <p className="text-muted-foreground mb-6">
-                Comece adicionando seus links favoritos ao dashboard
+              <h3 className="text-xl font-semibold mb-3">Nenhum link personalizado</h3>
+              <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+                Comece adicionando seus links favoritos ao dashboard para acesso rápido
               </p>
               <AceternityButton
                 onClick={() => setModalOpen(true)}

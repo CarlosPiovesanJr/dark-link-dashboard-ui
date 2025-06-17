@@ -75,6 +75,7 @@
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+    scroll-behavior: smooth;
   }
 
   /* Custom scrollbar for dark theme */
@@ -129,6 +130,11 @@
     @apply before:bg-gradient-to-r before:from-orange-500/20 before:via-orange-500/10 before:to-orange-500/20;
     @apply hover:before:opacity-100;
   }
+
+  /* Floating navbar spacing */
+  .floating-nav-spacing {
+    @apply pt-20;
+  }
 }
 
 /* Animation keyframes */
@@ -173,4 +179,18 @@
 
 .animate-pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Gradient text effects */
+.gradient-text {
+  @apply bg-gradient-to-r from-orange-500 to-blue-500 bg-clip-text text-transparent;
+}
+
+/* Enhanced hover effects */
+.hover-lift {
+  @apply transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-xl;
+}
+
+.hover-glow {
+  @apply transition-all duration-300 ease-out hover:shadow-lg hover:shadow-orange-500/20;
 }
