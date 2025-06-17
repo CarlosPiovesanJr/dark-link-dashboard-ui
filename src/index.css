@@ -3,45 +3,69 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Dark theme optimized design system */
+/* LinkBoard UI Design System - Dark theme optimized */
 
 @layer base {
   :root {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 220 13% 9%;      /* Very dark blue-gray */
+    --foreground: 220 9% 98%;      /* Almost white */
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 220 13% 13%;           /* Dark blue-gray */
+    --card-foreground: 220 9% 98%; /* Almost white */
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 220 13% 13%;        /* Dark blue-gray */
+    --popover-foreground: 220 9% 98%; /* Almost white */
 
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 25 95% 60%;         /* Orange primary */
+    --primary-foreground: 220 13% 9%; /* Dark text */
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 210 80% 65%;      /* Blue secondary */
+    --secondary-foreground: 220 13% 9%; /* Dark text */
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 220 13% 16%;          /* Medium dark blue-gray */
+    --muted-foreground: 220 9% 60%; /* Medium gray */
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 220 13% 16%;         /* Medium dark blue-gray */
+    --accent-foreground: 220 9% 98%; /* Almost white */
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 50%;    /* Red */
+    --destructive-foreground: 220 9% 98%; /* Almost white */
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 220 13% 20%;         /* Border gray */
+    --input: 220 13% 18%;          /* Input background */
+    --ring: 25 95% 60%;            /* Orange ring */
 
     --radius: 0.75rem;
+  }
 
-    /* Custom Aceternity variables */
-    --aceternity-bg: 222.2 84% 4.9%;
-    --aceternity-border: 217.2 32.6% 17.5%;
-    --aceternity-hover: 217.2 32.6% 25%;
-    --aceternity-glow: 217.2 91.2% 59.8%;
+  .light {
+    --background: 220 20% 98%;     /* Almost white */
+    --foreground: 220 13% 9%;      /* Very dark */
+
+    --card: 220 20% 95%;           /* Very light gray */
+    --card-foreground: 220 13% 9%; /* Very dark */
+
+    --popover: 220 20% 95%;        /* Very light gray */
+    --popover-foreground: 220 13% 9%; /* Very dark */
+
+    --primary: 25 95% 55%;         /* Orange primary */
+    --primary-foreground: 220 20% 98%; /* Almost white */
+
+    --secondary: 210 80% 60%;      /* Blue secondary */
+    --secondary-foreground: 220 20% 98%; /* Almost white */
+
+    --muted: 220 20% 92%;          /* Light gray */
+    --muted-foreground: 220 13% 45%; /* Medium gray */
+
+    --accent: 220 20% 92%;         /* Light gray */
+    --accent-foreground: 220 13% 9%; /* Very dark */
+
+    --destructive: 0 62.8% 50%;    /* Red */
+    --destructive-foreground: 220 20% 98%; /* Almost white */
+
+    --border: 220 20% 85%;         /* Light border */
+    --input: 220 20% 92%;          /* Input background */
+    --ring: 25 95% 55%;            /* Orange ring */
   }
 
   * {
@@ -71,29 +95,29 @@
   }
 }
 
-/* Aceternity UI custom styles */
+/* LinkBoard UI custom styles */
 @layer components {
   .aceternity-card {
     @apply relative overflow-hidden rounded-xl bg-card/50 backdrop-blur-sm border border-border/50;
     @apply transition-all duration-300 ease-out;
-    @apply hover:bg-card/70 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10;
+    @apply hover:bg-card/70 hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10;
     @apply hover:-translate-y-1 hover:scale-[1.02];
   }
 
   .aceternity-button {
     @apply relative inline-flex items-center justify-center rounded-lg px-6 py-3;
-    @apply bg-primary text-primary-foreground font-medium;
+    @apply bg-orange-500 text-white font-medium;
     @apply transition-all duration-200 ease-out;
-    @apply hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25;
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary;
+    @apply hover:bg-orange-600 hover:shadow-lg hover:shadow-orange-500/25;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500;
   }
 
   .aceternity-input {
     @apply flex h-12 w-full rounded-lg border border-border bg-background/50 px-4 py-3;
     @apply text-sm transition-all duration-200;
     @apply placeholder:text-muted-foreground;
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50;
-    @apply focus-visible:border-primary/50;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/50;
+    @apply focus-visible:border-orange-500/50;
   }
 
   .glass-effect {
@@ -102,7 +126,7 @@
 
   .glow-effect {
     @apply before:absolute before:inset-0 before:rounded-xl before:opacity-0 before:transition-opacity before:duration-300;
-    @apply before:bg-gradient-to-r before:from-primary/20 before:via-primary/10 before:to-primary/20;
+    @apply before:bg-gradient-to-r before:from-orange-500/20 before:via-orange-500/10 before:to-orange-500/20;
     @apply hover:before:opacity-100;
   }
 }
@@ -132,10 +156,10 @@
 
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.1);
+    box-shadow: 0 0 20px rgba(249, 115, 22, 0.1);
   }
   50% {
-    box-shadow: 0 0 30px rgba(59, 130, 246, 0.2);
+    box-shadow: 0 0 30px rgba(249, 115, 22, 0.2);
   }
 }
 

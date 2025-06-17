@@ -1,14 +1,18 @@
 
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
+import { motion, HTMLMotionProps } from "framer-motion";
 import { ButtonHTMLAttributes, ReactNode } from "react";
 
-interface AceternityButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface AceternityButtonProps {
   children: ReactNode;
   variant?: "primary" | "secondary" | "outline" | "ghost";
   size?: "sm" | "md" | "lg";
   loading?: boolean;
   icon?: ReactNode;
+  className?: string;
+  disabled?: boolean;
+  onClick?: () => void;
+  type?: "button" | "submit" | "reset";
 }
 
 export const AceternityButton = ({
@@ -19,11 +23,12 @@ export const AceternityButton = ({
   loading = false,
   icon,
   disabled,
-  ...props
+  onClick,
+  type = "button",
 }: AceternityButtonProps) => {
   const variants = {
-    primary: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25",
-    secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+    primary: "bg-orange-500 text-white hover:bg-orange-600 shadow-lg shadow-orange-500/25",
+    secondary: "bg-blue-500 text-white hover:bg-blue-600 shadow-lg shadow-blue-500/25",
     outline: "border border-border bg-transparent hover:bg-accent hover:text-accent-foreground",
     ghost: "hover:bg-accent hover:text-accent-foreground"
   };
@@ -34,30 +39,9 @@ export const AceternityButton = ({
     lg: "h-14 px-8 text-base"
   };
 
-  // Separate HTML button props from Framer Motion props
-  const {
-    onClick,
-    onMouseDown,
-    onMouseUp,
-    onMouseEnter,
-    onMouseLeave,
-    onFocus,
-    onBlur,
-    ...htmlProps
-  } = props;
-
-  const motionProps = {
-    onClick,
-    onMouseDown,
-    onMouseUp,
-    onMouseEnter,
-    onMouseLeave,
-    onFocus,
-    onBlur,
-  };
-
   return (
     <motion.button
+      type={type}
       className={cn(
         "relative inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 ease-out",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
@@ -67,10 +51,9 @@ export const AceternityButton = ({
         className
       )}
       disabled={disabled || loading}
+      onClick={onClick}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      {...htmlProps}
-      {...motionProps}
     >
       {loading && (
         <div className="absolute inset-0 flex items-center justify-center">

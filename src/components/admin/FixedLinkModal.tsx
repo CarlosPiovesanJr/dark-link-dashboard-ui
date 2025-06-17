@@ -7,10 +7,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { AceternityInput } from "@/components/ui/aceternity-input";
 import { AceternityButton } from "@/components/ui/aceternity-button";
 import { AceternityCard } from "@/components/ui/aceternity-card";
-import { useShortcuts, Shortcut } from "@/hooks/useShortcuts";
+import { useFixedLinks, FixedLink } from "@/hooks/useFixedLinks";
 import { X, Plus, Edit, Link, Type, FileText, Tag } from "lucide-react";
 
-const shortcutSchema = z.object({
+const fixedLinkSchema = z.object({
   title: z.string().min(1, "Título é obrigatório"),
   url: z.string().url("URL inválida"),
   description: z.string().optional(),
@@ -18,17 +18,17 @@ const shortcutSchema = z.object({
   icon: z.string().optional(),
 });
 
-type ShortcutFormData = z.infer<typeof shortcutSchema>;
+type FixedLinkFormData = z.infer<typeof fixedLinkSchema>;
 
-interface ShortcutModalProps {
+interface FixedLinkModalProps {
   isOpen: boolean;
   onClose: () => void;
-  shortcut?: Shortcut;
+  fixedLink?: FixedLink;
 }
 
-export const ShortcutModal = ({ isOpen, onClose, shortcut }: ShortcutModalProps) => {
+export const FixedLinkModal = ({ isOpen, onClose, fixedLink }: FixedLinkModalProps) => {
   const [loading, setLoading] = useState(false);
-  const { createShortcut, updateShortcut } = useShortcuts();
+  const { createFixedLink, updateFixedLink } = useFixedLinks();
 
   const {
     register,
@@ -36,27 +36,27 @@ export const ShortcutModal = ({ isOpen, onClose, shortcut }: ShortcutModalProps)
     formState: { errors },
     reset,
     setValue,
-  } = useForm<ShortcutFormData>({
-    resolver: zodResolver(shortcutSchema),
+  } = useForm<FixedLinkFormData>({
+    resolver: zodResolver(fixedLinkSchema),
   });
 
   useEffect(() => {
-    if (shortcut) {
-      setValue("title", shortcut.title);
-      setValue("url", shortcut.url);
-      setValue("description", shortcut.description || "");
-      setValue("category", shortcut.category || "");
-      setValue("icon", shortcut.icon || "");
+    if (fixedLink) {
+      setValue("title", fixedLink.title);
+      setValue("url", fixedLink.url);
+      setValue("description", fixedLink.description || "");
+      setValue("category", fixedLink.category || "");
+      setValue("icon", fixedLink.icon || "");
     } else {
       reset();
     }
-  }, [shortcut, setValue, reset]);
+  }, [fixedLink, setValue, reset]);
 
-  const onSubmit = async (data: ShortcutFormData) => {
+  const onSubmit = async (data: FixedLinkFormData) => {
     setLoading(true);
     
     try {
-      const shortcutData = {
+      const linkData = {
         title: data.title,
         url: data.url,
         description: data.description,
@@ -64,15 +64,15 @@ export const ShortcutModal = ({ isOpen, onClose, shortcut }: ShortcutModalProps)
         icon: data.icon,
       };
 
-      if (shortcut) {
-        await updateShortcut(shortcut.id, shortcutData);
+      if (fixedLink) {
+        await updateFixedLink(fixedLink.id, linkData);
       } else {
-        await createShortcut(shortcutData);
+        await createFixedLink(linkData);
       }
       onClose();
       reset();
     } catch (error) {
-      console.error("Error saving shortcut:", error);
+      console.error("Error saving fixed link:", error);
     }
     
     setLoading(false);
@@ -111,7 +111,7 @@ export const ShortcutModal = ({ isOpen, onClose, shortcut }: ShortcutModalProps)
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center">
-                    {shortcut ? (
+                    {fixedLink ? (
                       <Edit className="w-5 h-5 text-orange-500" />
                     ) : (
                       <Plus className="w-5 h-5 text-orange-500" />
@@ -119,12 +119,12 @@ export const ShortcutModal = ({ isOpen, onClose, shortcut }: ShortcutModalProps)
                   </div>
                   <div>
                     <h2 className="text-lg font-semibold">
-                      {shortcut ? "Editar Link" : "Novo Link"}
+                      {fixedLink ? "Editar Link Fixo" : "Novo Link Fixo"}
                     </h2>
                     <p className="text-sm text-muted-foreground">
-                      {shortcut 
-                        ? "Atualize as informações do link"
-                        : "Adicione um novo link ao seu dashboard"
+                      {fixedLink 
+                        ? "Atualize as informações do link fixo"
+                        : "Adicione um novo link fixo ao sistema"
                       }
                     </p>
                   </div>
@@ -166,7 +166,7 @@ export const ShortcutModal = ({ isOpen, onClose, shortcut }: ShortcutModalProps)
                 <AceternityInput
                   label="Categoria (opcional)"
                   icon={<Tag className="w-4 h-4" />}
-                  placeholder="Ex: Trabalho, Pessoal, Ferramentas"
+                  placeholder="Ex: Desenvolvimento, Operações"
                   error={errors.category?.message}
                   {...register("category")}
                 />
@@ -193,9 +193,9 @@ export const ShortcutModal = ({ isOpen, onClose, shortcut }: ShortcutModalProps)
                     type="submit"
                     className="flex-1"
                     loading={loading}
-                    icon={shortcut ? <Edit className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                    icon={fixedLink ? <Edit className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
                   >
-                    {shortcut ? "Atualizar" : "Criar"}
+                    {fixedLink ? "Atualizar" : "Criar"}
                   </AceternityButton>
                 </div>
               </form>

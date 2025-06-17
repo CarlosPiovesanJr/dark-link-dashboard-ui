@@ -1,73 +1,183 @@
-# Welcome to your Lovable project
 
-## Project info
+# LinkBoard UI
 
-**URL**: https://lovable.dev/projects/4bd276fc-e039-41f5-83c5-641fddb76be0
+Um dashboard moderno e personalizável para organizar seus links e ferramentas favoritas, construído com React, TypeScript e Aceternity UI.
 
-## How can I edit this code?
+## 🚀 Características
 
-There are several ways of editing your application.
+- **Dashboard Responsivo**: Interface moderna e responsiva que funciona em todos os dispositivos
+- **Tema Dark/Light**: Sistema completo de temas com switcher integrado
+- **Links Personalizados**: Adicione, edite e organize seus links favoritos
+- **Links Fixos do Sistema**: Links administrativos gerenciáveis pelo painel admin
+- **Autenticação Supabase**: Sistema de login/registro seguro
+- **Painel Administrativo**: Interface completa para gerenciar links fixos e configurações
+- **Animações Fluidas**: Transições suaves com Framer Motion
+- **Validação de Formulários**: Validação robusta com React Hook Form e Zod
 
-**Use Lovable**
+## 🛠️ Tecnologias
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/4bd276fc-e039-41f5-83c5-641fddb76be0) and start prompting.
+- **Frontend**: React 18, TypeScript, Vite
+- **Estilização**: Tailwind CSS, Aceternity UI
+- **Animações**: Framer Motion
+- **Formulários**: React Hook Form, Zod
+- **Backend**: Supabase (Auth + Database)
+- **Roteamento**: React Router DOM
+- **Estado**: TanStack Query
+- **Ícones**: Lucide React
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🎨 Design System
 
-**Use your preferred IDE**
+O LinkBoard UI utiliza um design system personalizado com:
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- **Cores Primárias**: Tons de laranja e azul suave
+- **Tema**: Dark mode por padrão com suporte a light mode
+- **Tipografia**: Sistema hierárquico otimizado para legibilidade
+- **Componentes**: Biblioteca customizada baseada em Aceternity UI
+- **Responsividade**: Mobile-first com breakpoints bem definidos
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 📱 Funcionalidades
 
-Follow these steps:
+### Para Usuários
+- ✅ Dashboard personalizado com links organizados
+- ✅ Adicionar/editar/remover links pessoais
+- ✅ Categorização de links
+- ✅ Busca e filtros
+- ✅ Tema claro/escuro
+- ✅ Interface responsiva
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Para Administradores
+- ✅ Painel administrativo protegido
+- ✅ Gerenciamento de links fixos do sistema
+- ✅ CRUD completo para links
+- ✅ Validação de formulários
+- ✅ Estatísticas e métricas
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## 🚀 Como Usar
 
-# Step 3: Install the necessary dependencies.
-npm i
+### Pré-requisitos
+- Node.js 18+ 
+- NPM ou Yarn
+- Conta Supabase (para autenticação e database)
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+### Instalação
+
+1. Clone o repositório:
+```bash
+git clone https://github.com/seu-usuario/linkboard-ui.git
+cd linkboard-ui
+```
+
+2. Instale as dependências:
+```bash
+npm install
+```
+
+3. Configure as variáveis de ambiente:
+```bash
+# Configure suas credenciais do Supabase
+VITE_SUPABASE_URL=sua-url-supabase
+VITE_SUPABASE_ANON_KEY=sua-chave-anonima
+```
+
+4. Execute o projeto:
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+5. Acesse `http://localhost:5173`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 📦 Scripts Disponíveis
 
-**Use GitHub Codespaces**
+```bash
+npm run dev          # Inicia o servidor de desenvolvimento
+npm run build        # Constrói o projeto para produção
+npm run preview      # Preview da build de produção
+npm run lint         # Executa o linter
+npm run type-check   # Verifica tipos TypeScript
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🏗️ Estrutura do Projeto
 
-## What technologies are used for this project?
+```
+src/
+├── components/
+│   ├── common/          # Componentes compartilhados (ThemeProvider, etc)
+│   ├── admin/           # Componentes administrativos
+│   └── ui/              # Componentes base da UI
+├── pages/
+│   ├── admin/           # Páginas administrativas
+│   ├── user/            # Páginas do usuário
+│   └── ...              # Outras páginas
+├── hooks/               # Custom hooks
+├── styles/              # Configurações de tema e estilos
+├── lib/                 # Utilitários e configurações
+└── integrations/        # Integrações externas (Supabase)
+```
 
-This project is built with:
+## 🔧 Configuração do Supabase
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Tabelas Necessárias
 
-## How can I deploy this project?
+```sql
+-- Tabela de shortcuts/links pessoais
+CREATE TABLE shortcuts (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  title TEXT NOT NULL,
+  url TEXT NOT NULL,
+  description TEXT,
+  category TEXT,
+  icon TEXT,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
 
-Simply open [Lovable](https://lovable.dev/projects/4bd276fc-e039-41f5-83c5-641fddb76be0) and click on Share -> Publish.
+-- RLS (Row Level Security)
+ALTER TABLE shortcuts ENABLE ROW LEVEL SECURITY;
 
-## Can I connect a custom domain to my Lovable project?
+CREATE POLICY "Users can manage their own shortcuts" ON shortcuts
+  FOR ALL USING (auth.uid() = user_id);
+```
 
-Yes, you can!
+### Configuração de Autenticação
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+1. No painel do Supabase, vá em Authentication > Settings
+2. Configure as URLs de redirecionamento
+3. Ative os provedores de autenticação desejados
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## 🎯 Roadmap
+
+- [ ] Importação/exportação de links
+- [ ] Compartilhamento de coleções
+- [ ] Integração com marcadores do navegador
+- [ ] API pública para integrações
+- [ ] Métricas avançadas de uso
+- [ ] PWA (Progressive Web App)
+- [ ] Modo offline
+- [ ] Temas personalizáveis
+
+## 🤝 Contribuindo
+
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+## 👨‍💻 Autor
+
+Desenvolvido por [Seu Nome](https://github.com/seu-usuario)
+
+## 🙏 Agradecimentos
+
+- [Aceternity UI](https://ui.aceternity.com/) pelos componentes base
+- [Supabase](https://supabase.com/) pela infraestrutura backend
+- [Tailwind CSS](https://tailwindcss.com/) pelo sistema de design
+- [Framer Motion](https://www.framer.com/motion/) pelas animações
+
+---
+
+⭐ Se este projeto te ajudou, considere dar uma estrela!

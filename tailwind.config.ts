@@ -62,6 +62,33 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// LinkBoard UI custom colors
+				orange: {
+					50: 'hsl(25 100% 97%)',
+					100: 'hsl(25 100% 94%)',
+					200: 'hsl(25 100% 87%)',
+					300: 'hsl(25 100% 78%)',
+					400: 'hsl(25 100% 66%)',
+					500: 'hsl(25 95% 60%)',
+					600: 'hsl(25 95% 50%)',
+					700: 'hsl(25 85% 45%)',
+					800: 'hsl(25 75% 40%)',
+					900: 'hsl(25 65% 35%)',
+					950: 'hsl(25 55% 20%)',
+				},
+				blue: {
+					50: 'hsl(210 100% 97%)',
+					100: 'hsl(210 100% 94%)',
+					200: 'hsl(210 100% 87%)',
+					300: 'hsl(210 100% 78%)',
+					400: 'hsl(210 90% 70%)',
+					500: 'hsl(210 80% 65%)',
+					600: 'hsl(210 80% 55%)',
+					700: 'hsl(210 70% 50%)',
+					800: 'hsl(210 60% 45%)',
+					900: 'hsl(210 50% 40%)',
+					950: 'hsl(210 40% 25%)',
 				}
 			},
 			borderRadius: {
@@ -88,10 +115,10 @@ export default {
 				},
 				'glow-pulse': {
 					'0%, 100%': {
-						boxShadow: '0 0 20px rgba(59, 130, 246, 0.1)'
+						boxShadow: '0 0 20px rgba(249, 115, 22, 0.1)'
 					},
 					'50%': {
-						boxShadow: '0 0 30px rgba(59, 130, 246, 0.3), 0 0 60px rgba(59, 130, 246, 0.1)'
+						boxShadow: '0 0 30px rgba(249, 115, 22, 0.3), 0 0 60px rgba(249, 115, 22, 0.1)'
 					}
 				},
 				'float': {
