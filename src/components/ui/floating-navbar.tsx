@@ -13,6 +13,7 @@ export const FloatingNav = ({
   navItems,
   className,
   rightElement,
+  alwaysVisible = false,
 }: {
   navItems: {
     name: string;
@@ -22,11 +23,14 @@ export const FloatingNav = ({
   }[];
   className?: string;
   rightElement?: React.ReactNode;
+  alwaysVisible?: boolean;
 }) => {
   const { scrollYProgress } = useScroll();
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(alwaysVisible);
 
   useMotionValueEvent(scrollYProgress, "change", (current) => {
+    if (alwaysVisible) return;
+    
     if (typeof current === "number") {
       let direction = current! - scrollYProgress.getPrevious()!;
 
@@ -46,12 +50,12 @@ export const FloatingNav = ({
     <AnimatePresence mode="wait">
       <motion.div
         initial={{
-          opacity: 1,
-          y: -100,
+          opacity: alwaysVisible ? 1 : 1,
+          y: alwaysVisible ? 0 : -100,
         }}
         animate={{
-          y: visible ? 0 : -100,
-          opacity: visible ? 1 : 0,
+          y: visible ? 0 : (alwaysVisible ? 0 : -100),
+          opacity: visible ? 1 : (alwaysVisible ? 1 : 0),
         }}
         transition={{
           duration: 0.2,

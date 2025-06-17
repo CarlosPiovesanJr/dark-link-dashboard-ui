@@ -74,6 +74,7 @@ export const MainNavigation: React.FC<MainNavigationProps> = ({ onNewLink }) => 
     <FloatingNav 
       navItems={navItems} 
       rightElement={rightElement}
+      alwaysVisible={true}
       className="bg-card/90 backdrop-blur-xl border-orange-500/20"
     />
   );

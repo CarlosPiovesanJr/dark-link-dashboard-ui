@@ -41,47 +41,46 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Floating Navigation */}
-      <MainNavigation onNewLink={() => setModalOpen(true)} />
+      {/* Fixed Floating Navigation */}
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <MainNavigation onNewLink={() => setModalOpen(true)} />
+      </div>
 
-      {/* Hero Section */}
-      <section className="relative pt-24 pb-16">
+      {/* Hero Section - Reduced height */}
+      <section className="relative pt-20 pb-8">
         <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-blue-500/5" />
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <motion.div
-            className="text-center mb-12"
+            className="text-center mb-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
             <motion.div
-              className="w-20 h-20 bg-gradient-to-r from-orange-500 to-blue-500 rounded-3xl flex items-center justify-center mx-auto mb-6"
+              className="w-16 h-16 bg-gradient-to-r from-orange-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4"
               animate={{ rotate: [0, 5, -5, 0] }}
               transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
             >
-              <ExternalLink className="w-10 h-10 text-white" />
+              <ExternalLink className="w-8 h-8 text-white" />
             </motion.div>
             
-            <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-orange-500 to-blue-500 bg-clip-text text-transparent mb-4">
+            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-orange-500 to-blue-500 bg-clip-text text-transparent mb-3">
               LinkBoard UI
             </h1>
             
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
+            <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-6">
               Bem-vindo de volta, <span className="text-foreground font-medium">{user?.email?.split('@')[0]}</span>! 
-              Acesse rapidamente seus links e ferramentas favoritas.
+              Acesse rapidamente seus links favoritos.
             </p>
             
-            <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
-              <div className="flex items-center gap-1">
-                <Clock className="w-4 h-4" />
-                {new Date().toLocaleDateString('pt-BR', { 
-                  weekday: 'long', 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
-                })}
-              </div>
+            <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+              <Clock className="w-4 h-4" />
+              {new Date().toLocaleDateString('pt-BR', { 
+                weekday: 'long', 
+                day: 'numeric', 
+                month: 'long' 
+              })}
             </div>
           </motion.div>
         </div>
@@ -91,25 +90,25 @@ const Dashboard = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         {/* Fixed Links Section */}
         <motion.section
-          className="mb-16"
+          className="mb-12"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
         >
-          <div className="flex items-center gap-3 mb-8">
+          <div className="flex items-center gap-3 mb-6">
             <div className="w-8 h-8 bg-blue-500/10 rounded-lg flex items-center justify-center">
               <Folder className="w-4 h-4 text-blue-500" />
             </div>
-            <h2 className="text-2xl font-bold">Links do Sistema</h2>
+            <h2 className="text-xl font-bold">Links do Sistema</h2>
             <div className="flex-1 border-t border-border/50" />
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {fixedLinksLoading ? (
               [...Array(4)].map((_, i) => (
                 <div
                   key={i}
-                  className="h-48 bg-muted/20 rounded-xl animate-pulse"
+                  className="h-40 bg-muted/20 rounded-xl animate-pulse"
                 />
               ))
             ) : (
@@ -145,12 +144,12 @@ const Dashboard = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.5 }}
         >
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-orange-500/10 rounded-lg flex items-center justify-center">
                 <User className="w-4 h-4 text-orange-500" />
               </div>
-              <h2 className="text-2xl font-bold">Meus Links</h2>
+              <h2 className="text-xl font-bold">Meus Links</h2>
               <span className="px-3 py-1 bg-orange-500/10 text-orange-500 text-sm rounded-full font-medium">
                 {shortcuts.length}
               </span>
@@ -167,16 +166,16 @@ const Dashboard = () => {
           </div>
 
           {shortcutsLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {[...Array(4)].map((_, i) => (
                 <div
                   key={i}
-                  className="h-48 bg-muted/20 rounded-xl animate-pulse"
+                  className="h-40 bg-muted/20 rounded-xl animate-pulse"
                 />
               ))}
             </div>
           ) : shortcuts.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {shortcuts.map((shortcut, index) => (
                 <motion.div
                   key={shortcut.id}
@@ -205,16 +204,16 @@ const Dashboard = () => {
             </div>
           ) : (
             <motion.div
-              className="text-center py-16"
+              className="text-center py-12"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
             >
-              <div className="w-20 h-20 bg-muted/20 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                <Plus className="w-10 h-10 text-muted-foreground" />
+              <div className="w-16 h-16 bg-muted/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Plus className="w-8 h-8 text-muted-foreground" />
               </div>
-              <h3 className="text-xl font-semibold mb-3">Nenhum link personalizado</h3>
-              <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+              <h3 className="text-lg font-semibold mb-3">Nenhum link personalizado</h3>
+              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
                 Comece adicionando seus links favoritos ao dashboard para acesso rápido
               </p>
               <AceternityButton
