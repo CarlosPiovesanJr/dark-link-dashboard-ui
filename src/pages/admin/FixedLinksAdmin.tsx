@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { useFixedLinks } from "@/hooks/useFixedLinks";
+import { useFixedLinks, FixedLink } from "@/hooks/useFixedLinks";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { AceternityButton } from "@/components/ui/aceternity-button";
 import { AceternityCard } from "@/components/ui/aceternity-card";
@@ -18,10 +18,10 @@ import {
 
 const FixedLinksAdmin = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [editingLink, setEditingLink] = useState(null);
+  const [editingLink, setEditingLink] = useState<FixedLink | undefined>(undefined);
   const { fixedLinks, loading, deleteFixedLink } = useFixedLinks();
 
-  const handleEditLink = (link: any) => {
+  const handleEditLink = (link: FixedLink) => {
     setEditingLink(link);
     setModalOpen(true);
   };
@@ -34,7 +34,7 @@ const FixedLinksAdmin = () => {
 
   const closeModal = () => {
     setModalOpen(false);
-    setEditingLink(null);
+    setEditingLink(undefined);
   };
 
   const openLinkInNewTab = (url: string) => {

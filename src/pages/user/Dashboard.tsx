@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
-import { useShortcuts } from "@/hooks/useShortcuts";
+import { useShortcuts, Shortcut } from "@/hooks/useShortcuts";
 import { useFixedLinks } from "@/hooks/useFixedLinks";
 import { LinkCard } from "@/components/ui/aceternity-card";
 import { AceternityButton } from "@/components/ui/aceternity-button";
@@ -18,12 +18,12 @@ import {
 
 const Dashboard = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [editingShortcut, setEditingShortcut] = useState(null);
+  const [editingShortcut, setEditingShortcut] = useState<Shortcut | undefined>(undefined);
   const { user } = useAuth();
   const { shortcuts, loading: shortcutsLoading, deleteShortcut } = useShortcuts();
   const { fixedLinks, loading: fixedLinksLoading } = useFixedLinks();
 
-  const handleEditShortcut = (shortcut: any) => {
+  const handleEditShortcut = (shortcut: Shortcut) => {
     setEditingShortcut(shortcut);
     setModalOpen(true);
   };
@@ -36,7 +36,7 @@ const Dashboard = () => {
 
   const closeModal = () => {
     setModalOpen(false);
-    setEditingShortcut(null);
+    setEditingShortcut(undefined);
   };
 
   return (
@@ -121,7 +121,7 @@ const Dashboard = () => {
                 >
                   <LinkCard
                     title={link.title}
-                    description={link.description}
+                    description={link.description ?? undefined}
                     url={link.url}
                     icon={
                       link.icon ? (
@@ -130,7 +130,7 @@ const Dashboard = () => {
                         <ExternalLink className="w-5 h-5" />
                       )
                     }
-                    category={link.category}
+                    category={link.category ?? undefined}
                   />
                 </motion.div>
               ))
@@ -185,7 +185,7 @@ const Dashboard = () => {
                 >
                   <LinkCard
                     title={shortcut.title}
-                    description={shortcut.description}
+                    description={shortcut.description ?? undefined}
                     url={shortcut.url}
                     icon={
                       shortcut.icon ? (
@@ -194,7 +194,7 @@ const Dashboard = () => {
                         <ExternalLink className="w-5 h-5" />
                       )
                     }
-                    category={shortcut.category}
+                    category={shortcut.category ?? undefined}
                     isPersonal={true}
                     onEdit={() => handleEditShortcut(shortcut)}
                     onDelete={() => handleDeleteShortcut(shortcut.id)}

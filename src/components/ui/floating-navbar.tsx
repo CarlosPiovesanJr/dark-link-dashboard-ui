@@ -9,18 +9,20 @@ import {
 } from "framer-motion";
 import { cn } from "@/lib/utils";
 
+interface NavItem {
+  name: string;
+  link: string;
+  icon?: JSX.Element;
+  onClick?: () => void;
+}
+
 export const FloatingNav = ({
   navItems,
   className,
   rightElement,
   alwaysVisible = false,
 }: {
-  navItems: {
-    name: string;
-    link: string;
-    icon?: JSX.Element;
-    onClick?: () => void;
-  }[];
+  navItems: NavItem[];
   className?: string;
   rightElement?: React.ReactNode;
   alwaysVisible?: boolean;
@@ -65,7 +67,7 @@ export const FloatingNav = ({
           className
         )}
       >
-        {navItems.map((navItem: any, idx: number) => (
+        {navItems.map((navItem, idx) => (
           <button
             key={`link=${idx}`}
             onClick={navItem.onClick || (() => {})}
