@@ -8,11 +8,11 @@ export interface Shortcut {
   id: string;
   title: string;
   url: string;
-  description?: string;
-  category?: string;
-  icon?: string;
-  user_id?: string;
-  created_at?: string;
+  description?: string | null;
+  category?: string | null;
+  icon?: string | null;
+  user_id?: string | null;
+  created_at?: string | null;
 }
 
 export const useShortcuts = () => {
@@ -38,7 +38,7 @@ export const useShortcuts = () => {
 
       if (error) throw error;
 
-      setShortcuts(data || []);
+      setShortcuts((data || []) as Shortcut[]);
     } catch (error: any) {
       console.error('Error fetching shortcuts:', error);
       toast({
@@ -68,7 +68,7 @@ export const useShortcuts = () => {
 
       if (error) throw error;
 
-      setShortcuts(prev => [data, ...prev]);
+      setShortcuts(prev => [data as Shortcut, ...prev]);
       
       toast({
         title: "Link criado com sucesso!",
@@ -89,19 +89,20 @@ export const useShortcuts = () => {
 
   const updateShortcut = async (id: string, updates: Partial<Shortcut>) => {
     try {
+      if (!user) throw new Error('Usuário não autenticado');
       const { data, error } = await supabase
         .from('shortcuts')
         .update(updates)
         .eq('id', id)
-        .eq('user_id', user?.id)
+        .eq('user_id', user.id)
         .select()
         .single();
 
       if (error) throw error;
 
-      setShortcuts(prev => 
-        prev.map(shortcut => 
-          shortcut.id === id ? { ...shortcut, ...data } : shortcut
+      setShortcuts(prev =>
+        prev.map(shortcut =>
+          shortcut.id === id ? { ...shortcut, ...(data as Shortcut) } : shortcut
         )
       );
 
@@ -124,11 +125,12 @@ export const useShortcuts = () => {
 
   const deleteShortcut = async (id: string) => {
     try {
+      if (!user) throw new Error('Usuário não autenticado');
       const { error } = await supabase
         .from('shortcuts')
         .delete()
         .eq('id', id)
-        .eq('user_id', user?.id);
+        .eq('user_id', user.id);
 
       if (error) throw error;
 

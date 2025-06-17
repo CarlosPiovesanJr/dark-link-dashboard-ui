@@ -8,11 +8,11 @@ export interface FixedLink {
   id: string;
   title: string;
   url: string;
-  description?: string;
-  category?: string;
-  icon?: string;
-  created_at?: string;
-  updated_at?: string;
+  description?: string | null;
+  category?: string | null;
+  icon?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
 }
 
 export const useFixedLinks = () => {
