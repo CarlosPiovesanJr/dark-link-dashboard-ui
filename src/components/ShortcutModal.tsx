@@ -56,10 +56,19 @@ export const ShortcutModal = ({ isOpen, onClose, shortcut }: ShortcutModalProps)
     setLoading(true);
     
     try {
+      // Ensure required fields are properly typed
+      const shortcutData = {
+        title: data.title,
+        url: data.url,
+        description: data.description,
+        category: data.category,
+        icon: data.icon,
+      };
+
       if (shortcut) {
-        await updateShortcut(shortcut.id, data);
+        await updateShortcut(shortcut.id, shortcutData);
       } else {
-        await createShortcut(data);
+        await createShortcut(shortcutData);
       }
       onClose();
       reset();
