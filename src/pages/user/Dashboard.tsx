@@ -7,21 +7,42 @@ import { useFixedLinks } from "@/hooks/useFixedLinks";
 import { LinkCard } from "@/components/ui/aceternity-card";
 import { AceternityButton } from "@/components/ui/aceternity-button";
 import { ShortcutModal } from "@/components/ShortcutModal";
-import { MainNavigation } from "@/components/common/MainNavigation";
+import {
+  SidebarProvider,
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarTrigger,
+  SidebarRail,
+  SidebarInset,
+} from "@/components/ui/sidebar";
+import { ThemeToggle } from "@/components/common/ThemeToggle";
+import { useNavigate } from "react-router-dom";
 import { 
-  Plus, 
-  User, 
+  Plus,
+  User,
   ExternalLink,
   Folder,
-  Clock
+  Clock,
+  LogOut,
+  Home,
+  Shield
 } from "lucide-react";
 
 const Dashboard = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingShortcut, setEditingShortcut] = useState<Shortcut | undefined>(undefined);
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const { shortcuts, loading: shortcutsLoading, deleteShortcut } = useShortcuts();
   const { fixedLinks, loading: fixedLinksLoading } = useFixedLinks();
+  const navigate = useNavigate();
+
+  const isAdmin =
+    user?.email === "admin@linkboard.com" || user?.email?.includes("admin");
 
   const handleEditShortcut = (shortcut: Shortcut) => {
     setEditingShortcut(shortcut);
@@ -40,17 +61,61 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Fixed Floating Navigation */}
-      <div className="fixed top-0 left-0 right-0 z-50">
-        <MainNavigation onNewLink={() => setModalOpen(true)} />
-      </div>
+    <SidebarProvider>
+      <div className="flex min-h-screen bg-background">
+        <Sidebar className="border-border border-r" collapsible="offcanvas">
+          <SidebarHeader className="flex items-center gap-2 border-b">
+            <SidebarTrigger className="md:hidden" />
+            <span className="font-semibold text-sm">LinkBoard</span>
+          </SidebarHeader>
+          <SidebarContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={() => navigate("/")}> 
+                  <Home className="w-4 h-4" />
+                  <span>Dashboard</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={() => setModalOpen(true)}>
+                  <Plus className="w-4 h-4" />
+                  <span>Novo Link</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              {isAdmin && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton onClick={() => navigate("/admin")}> 
+                    <Shield className="w-4 h-4" />
+                    <span>Admin</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
+            </SidebarMenu>
+          </SidebarContent>
+          <SidebarFooter className="mt-auto border-t flex flex-col gap-2">
+            <div className="flex items-center gap-2 text-sm">
+              <User className="w-4 h-4" />
+              {user?.email?.split("@")[0]}
+            </div>
+            <ThemeToggle />
+            <AceternityButton
+              variant="ghost"
+              size="sm"
+              onClick={signOut}
+              icon={<LogOut className="w-4 h-4" />}
+            >
+              Sair
+            </AceternityButton>
+          </SidebarFooter>
+        </Sidebar>
+        <SidebarRail />
+        <SidebarInset>
+          <div className="min-h-screen bg-background">
+            {/* Hero Section - Reduced height */}
+            <section className="relative pt-20 pb-8">
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-blue-500/5" />
 
-      {/* Hero Section - Reduced height */}
-      <section className="relative pt-20 pb-8">
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-blue-500/5" />
-        
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <motion.div
             className="text-center mb-8"
             initial={{ opacity: 0, y: 20 }}
@@ -233,7 +298,10 @@ const Dashboard = () => {
         onClose={closeModal}
         shortcut={editingShortcut}
       />
-    </div>
+          </div>
+        </SidebarInset>
+      </div>
+    </SidebarProvider>
   );
 };
 
