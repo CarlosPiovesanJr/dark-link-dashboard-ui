@@ -34,6 +34,28 @@ export const AceternityButton = ({
     lg: "h-14 px-8 text-base"
   };
 
+  // Separate HTML button props from Framer Motion props
+  const {
+    onClick,
+    onMouseDown,
+    onMouseUp,
+    onMouseEnter,
+    onMouseLeave,
+    onFocus,
+    onBlur,
+    ...htmlProps
+  } = props;
+
+  const motionProps = {
+    onClick,
+    onMouseDown,
+    onMouseUp,
+    onMouseEnter,
+    onMouseLeave,
+    onFocus,
+    onBlur,
+  };
+
   return (
     <motion.button
       className={cn(
@@ -47,7 +69,8 @@ export const AceternityButton = ({
       disabled={disabled || loading}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      {...props}
+      {...htmlProps}
+      {...motionProps}
     >
       {loading && (
         <div className="absolute inset-0 flex items-center justify-center">
