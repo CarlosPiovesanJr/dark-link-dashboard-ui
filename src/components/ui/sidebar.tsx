@@ -1,8 +1,8 @@
 "use client";
 import { cn } from "@/lib/utils";
 import React, { useState, createContext, useContext } from "react";
-import { AnimatePresence, motion } from "motion/react";
-import { IconMenu2, IconX } from "@tabler/icons-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Menu, X } from "lucide-react";
 
 interface Links {
   label: string;
@@ -88,11 +88,11 @@ export const DesktopSidebar = ({
     <>
       <motion.div
         className={cn(
-          "h-full px-4 py-4 hidden  md:flex md:flex-col bg-neutral-100 dark:bg-neutral-800 w-[300px] shrink-0",
+          "h-full px-4 py-4 hidden md:flex md:flex-col bg-neutral-100 dark:bg-neutral-800 shrink-0",
           className
         )}
         animate={{
-          width: animate ? (open ? "300px" : "60px") : "300px",
+          width: animate ? (open ? "256px" : "64px") : "256px",
         }}
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
@@ -119,7 +119,7 @@ export const MobileSidebar = ({
         {...props}
       >
         <div className="flex justify-end z-20 w-full">
-          <IconMenu2
+          <Menu
             className="text-neutral-800 dark:text-neutral-200"
             onClick={() => setOpen(!open)}
           />
@@ -143,7 +143,7 @@ export const MobileSidebar = ({
                 className="absolute right-10 top-10 z-50 text-neutral-800 dark:text-neutral-200"
                 onClick={() => setOpen(!open)}
               >
-                <IconX />
+                <X />
               </div>
               {children}
             </motion.div>
@@ -186,3 +186,50 @@ export const SidebarLink = ({
     </a>
   );
 };
+
+export const SidebarHeader = ({ className, ...props }: React.ComponentProps<'div'>) => (
+  <div className={cn('p-4', className)} {...props} />
+);
+
+export const SidebarContent = ({ className, ...props }: React.ComponentProps<'div'>) => (
+  <div className={cn('flex-1 py-2', className)} {...props} />
+);
+
+export const SidebarFooter = ({ className, ...props }: React.ComponentProps<'div'>) => (
+  <div className={cn('p-4', className)} {...props} />
+);
+
+export const SidebarMenu = ({ className, ...props }: React.ComponentProps<'ul'>) => (
+  <ul className={cn('grid gap-1', className)} {...props} />
+);
+
+export const SidebarMenuItem = ({ className, ...props }: React.ComponentProps<'li'>) => (
+  <li className={cn(className)} {...props} />
+);
+
+export const SidebarMenuButton = ({ className, ...props }: React.ComponentProps<'button'>) => (
+  <button
+    className={cn(
+      'flex items-center gap-2 w-full rounded-md p-2 text-sm transition-colors hover:bg-muted',
+      className
+    )}
+    {...props}
+  />
+);
+
+export const SidebarTrigger = ({ className, children, ...props }: React.ComponentProps<'button'>) => {
+  const { open, setOpen } = useSidebar();
+  return (
+    <button className={cn('p-2', className)} onClick={() => setOpen(!open)} {...props}>
+      {children ?? <Menu className="w-4 h-4" />}
+    </button>
+  );
+};
+
+export const SidebarRail = ({ className, ...props }: React.ComponentProps<'div'>) => (
+  <div className={cn('hidden md:block w-0', className)} {...props} />
+);
+
+export const SidebarInset = ({ className, ...props }: React.ComponentProps<'div'>) => (
+  <div className={cn('flex-1', className)} {...props} />
+);

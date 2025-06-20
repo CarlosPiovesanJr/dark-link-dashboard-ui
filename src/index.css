@@ -131,6 +131,11 @@
     @apply hover:before:opacity-100;
   }
 
+  /* Base styles for the GlowingEffect component */
+  .glow {
+    @apply relative;
+  }
+
   /* Floating navbar spacing */
   .floating-nav-spacing {
     @apply pt-20;

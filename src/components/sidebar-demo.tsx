@@ -2,12 +2,12 @@
 import React, { useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import {
-  IconArrowLeft,
-  IconBrandTabler,
-  IconSettings,
-  IconUserBolt,
-} from "@tabler/icons-react";
-import { motion } from "motion/react";
+  ArrowLeft,
+  BadgeCent,
+  Settings,
+  User2,
+} from "lucide-react";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 export default function SidebarDemo() {
@@ -16,28 +16,28 @@ export default function SidebarDemo() {
       label: "Dashboard",
       href: "#",
       icon: (
-        <IconBrandTabler className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <BadgeCent className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
       label: "Profile",
       href: "#",
       icon: (
-        <IconUserBolt className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <User2 className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
       label: "Settings",
       href: "#",
       icon: (
-        <IconSettings className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <Settings className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
       label: "Logout",
       href: "#",
       icon: (
-        <IconArrowLeft className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <ArrowLeft className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
   ];
