@@ -10,15 +10,17 @@ import {
   Settings,
   Shield,
   Plus,
-  Home
+  Home,
+  FolderPlus
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
 interface MainNavigationProps {
   onNewLink?: () => void;
+  onNewFolder?: () => void;
 }
 
-export const MainNavigation: React.FC<MainNavigationProps> = ({ onNewLink }) => {
+export const MainNavigation: React.FC<MainNavigationProps> = ({ onNewLink, onNewFolder }) => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
@@ -37,6 +39,12 @@ export const MainNavigation: React.FC<MainNavigationProps> = ({ onNewLink }) => 
       link: "#",
       icon: <Plus className="w-4 h-4" />,
       onClick: onNewLink
+    },
+    {
+      name: "Nova Pasta",
+      link: "#",
+      icon: <FolderPlus className="w-4 h-4" />,
+      onClick: onNewFolder
     },
     ...(isAdmin ? [{
       name: "Admin",
