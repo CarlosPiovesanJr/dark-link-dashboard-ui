@@ -1,19 +1,12 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 import { useToast } from './use-toast';
+import type { Database } from '@/integrations/supabase/types';
 
-export interface Shortcut {
-  id: string;
-  title: string;
-  url: string;
-  description?: string | null;
-  category?: string | null;
-  icon?: string | null;
-  user_id?: string | null;
-  created_at?: string | null;
-}
+export type Shortcut = Database['public']['Tables']['links']['Row'];
+export type ShortcutInsert = Database['public']['Tables']['links']['Insert'];
+export type ShortcutUpdate = Database['public']['Tables']['links']['Update'];
 
 export const useShortcuts = () => {
   const [shortcuts, setShortcuts] = useState<Shortcut[]>([]);
@@ -24,100 +17,82 @@ export const useShortcuts = () => {
   const fetchShortcuts = async () => {
     try {
       setLoading(true);
-      
       if (!user) {
         setShortcuts([]);
         return;
       }
-
+      // Busca apenas links que não estão em pastas (folder_id null)
       const { data, error } = await supabase
-        .from('shortcuts')
+        .from('links')
         .select('*')
         .eq('user_id', user.id)
+        .is('folder_id', null)
         .order('created_at', { ascending: false });
-
       if (error) throw error;
-
-      setShortcuts((data || []) as Shortcut[]);
+      setShortcuts(data || []);
     } catch (error: any) {
       console.error('Error fetching shortcuts:', error);
       toast({
-        title: "Erro ao carregar links",
+        title: 'Erro ao carregar links',
         description: error.message,
-        variant: "destructive",
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
     }
   };
 
-  const createShortcut = async (shortcut: Omit<Shortcut, 'id' | 'user_id' | 'created_at'>) => {
+  const createShortcut = async (shortcut: Omit<ShortcutInsert, 'id' | 'created_at'>) => {
     try {
       if (!user) throw new Error('Usuário não autenticado');
-
       const { data, error } = await supabase
-        .from('shortcuts')
-        .insert([
-          {
-            ...shortcut,
-            user_id: user.id,
-          }
-        ])
+        .from('links')
+        .insert([{ ...shortcut, user_id: user.id }])
         .select()
         .single();
-
       if (error) throw error;
-
-      setShortcuts(prev => [data as Shortcut, ...prev]);
-      
+      setShortcuts(prev => [data, ...prev]);
       toast({
-        title: "Link criado com sucesso!",
-        description: `${shortcut.title} foi adicionado aos seus links.`,
+        title: 'Link criado com sucesso!',
+        description: `${shortcut.title || 'Link'} foi adicionado aos seus links.`,
       });
-
       return data;
     } catch (error: any) {
       console.error('Error creating shortcut:', error);
       toast({
-        title: "Erro ao criar link",
+        title: 'Erro ao criar link',
         description: error.message,
-        variant: "destructive",
+        variant: 'destructive',
       });
       throw error;
     }
   };
 
-  const updateShortcut = async (id: string, updates: Partial<Shortcut>) => {
+  const updateShortcut = async (id: string, updates: ShortcutUpdate) => {
     try {
-      if (!user) throw new Error('Usuário não autenticado');
       const { data, error } = await supabase
-        .from('shortcuts')
+        .from('links')
         .update(updates)
         .eq('id', id)
-        .eq('user_id', user.id)
         .select()
         .single();
-
       if (error) throw error;
-
       setShortcuts(prev =>
         prev.map(shortcut =>
-          shortcut.id === id ? { ...shortcut, ...(data as Shortcut) } : shortcut
+          shortcut.id === id ? data : shortcut
         )
       );
-
       toast({
-        title: "Link atualizado!",
-        description: "As alterações foram salvas com sucesso.",
+        title: 'Link atualizado!',
+        description: 'As alterações foram salvas com sucesso.',
       });
-
       return data;
     } catch (error: any) {
       console.error('Error updating shortcut:', error);
       toast({
-        title: "Erro ao atualizar link",
+        title: 'Erro ao atualizar link',
         description: error.message,
-        variant: "destructive",
+        variant: 'destructive',
       });
       throw error;
     }
@@ -125,27 +100,22 @@ export const useShortcuts = () => {
 
   const deleteShortcut = async (id: string) => {
     try {
-      if (!user) throw new Error('Usuário não autenticado');
       const { error } = await supabase
-        .from('shortcuts')
+        .from('links')
         .delete()
-        .eq('id', id)
-        .eq('user_id', user.id);
-
+        .eq('id', id);
       if (error) throw error;
-
       setShortcuts(prev => prev.filter(shortcut => shortcut.id !== id));
-      
       toast({
-        title: "Link removido",
-        description: "O link foi removido da sua lista.",
+        title: 'Link removido',
+        description: 'O link foi removido da sua lista.',
       });
     } catch (error: any) {
       console.error('Error deleting shortcut:', error);
       toast({
-        title: "Erro ao remover link",
+        title: 'Erro ao remover link',
         description: error.message,
-        variant: "destructive",
+        variant: 'destructive',
       });
       throw error;
     }
@@ -153,6 +123,7 @@ export const useShortcuts = () => {
 
   useEffect(() => {
     fetchShortcuts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   return {

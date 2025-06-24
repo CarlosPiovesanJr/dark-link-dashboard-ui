@@ -38,7 +38,7 @@ export const AdminLayout = ({ children, title, description }: AdminLayoutProps) 
               
               <div className="flex items-center gap-3">
                 <motion.div
-                  className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center"
+                  className="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center"
                   animate={{ rotate: [0, 5, -5, 0] }}
                   transition={{ duration: 2, repeat: Infinity, repeatDelay: 5 }}
                 >
@@ -85,7 +85,7 @@ export const AdminLayout = ({ children, title, description }: AdminLayoutProps) 
           transition={{ duration: 0.5 }}
         >
           <div className="flex items-center gap-3 mb-4">
-            <Settings className="w-5 h-5 text-orange-500" />
+            <Settings className="w-5 h-5 text-purple-500" />
             <h2 className="text-2xl font-bold">{title}</h2>
             <div className="flex-1 border-t border-border" />
           </div>

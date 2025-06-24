@@ -48,9 +48,9 @@ const FixedLinksAdmin = () => {
     >
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
-          <LinkIcon className="w-5 h-5 text-orange-500" />
+          <LinkIcon className="w-5 h-5 text-purple-500" />
           <h3 className="text-xl font-semibold">Links Fixos do Sistema</h3>
-          <span className="px-2 py-1 bg-orange-500/10 text-orange-500 text-sm rounded-full">
+          <span className="px-2 py-1 bg-purple-500/10 text-purple-500 text-sm rounded-full">
             {fixedLinks.length}
           </span>
         </div>
@@ -84,7 +84,7 @@ const FixedLinksAdmin = () => {
               <AceternityCard className="p-6 group">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-500">
+                    <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-500">
                       {link.icon ? (
                         <span className="text-lg">{link.icon}</span>
                       ) : (
@@ -92,7 +92,7 @@ const FixedLinksAdmin = () => {
                       )}
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-semibold text-foreground group-hover:text-orange-500 transition-colors">
+                      <h4 className="font-semibold text-foreground group-hover:text-purple-500 transition-colors">
                         {link.title}
                       </h4>
                       {link.category && (

@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
 import { useShortcuts, Shortcut } from "@/hooks/useShortcuts";
@@ -20,6 +19,8 @@ import {
   Edit,
   Trash2
 } from "lucide-react";
+import { CardSizeSlider } from '@/components/CardSizeSlider';
+import { HoverEffect } from '@/components/ui/card-hover-effect';
 
 const Dashboard = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -30,6 +31,35 @@ const Dashboard = () => {
   const { shortcuts, loading: shortcutsLoading, deleteShortcut } = useShortcuts();
   const { fixedLinks, loading: fixedLinksLoading } = useFixedLinks();
   const { folders, loading: foldersLoading, deleteFolder } = useCustomFolders();
+
+  const [cardSize, setCardSize] = useState<'sm' | 'md' | 'lg'>(() => {
+    return (localStorage.getItem('cardSize') as 'sm' | 'md' | 'lg') || 'md';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('cardSize', cardSize);
+  }, [cardSize]);
+
+  const cardWidth =
+    cardSize === 'sm' ? '11rem' :
+    cardSize === 'md' ? '16rem' :
+    '20rem';
+  const gridClass =
+    cardSize === 'sm'
+      ? 'grid grid-cols-6 gap-4'
+      : cardSize === 'md'
+      ? 'grid grid-cols-4 gap-4'
+      : 'grid grid-cols-3 gap-4';
+
+  const cardHeight =
+    cardSize === 'sm' ? 'h-28' : cardSize === 'md' ? 'h-40' : 'h-60';
+
+  const cardSquareSize =
+    cardSize === 'sm' ? 'w-44 h-44' :
+    cardSize === 'md' ? 'w-64 h-64' :
+    'w-80 h-80';
+
+  const isClintUser = user?.email?.endsWith('@clint.digital');
 
   const handleEditShortcut = (shortcut: Shortcut) => {
     setEditingShortcut(shortcut);
@@ -71,52 +101,23 @@ const Dashboard = () => {
         onNewFolder={() => setFolderModalOpen(true)}
       />
 
-      {/* Hero Section - Reduced height */}
-      <section className="relative pt-24 pb-8">
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-blue-500/5" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <motion.div
-            className="text-center mb-8"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <motion.div
-              className="w-16 h-16 bg-gradient-to-r from-orange-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4"
-              animate={{ rotate: [0, 5, -5, 0] }}
-              transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
-            >
-              <ExternalLink className="w-8 h-8 text-white" />
-            </motion.div>
-            
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-orange-500 to-blue-500 bg-clip-text text-transparent mb-3">
-              LinkBoard UI
-            </h1>
-            
-            <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-6">
-              Bem-vindo de volta, <span className="text-foreground font-medium">{user?.email?.split('@')[0]}</span>! 
-              Acesse rapidamente seus links favoritos.
-            </p>
-            
-            <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-              <Clock className="w-4 h-4" />
-              {new Date().toLocaleDateString('pt-BR', { 
-                weekday: 'long', 
-                day: 'numeric', 
-                month: 'long' 
-              })}
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+      {/* Main Content - agora logo após a navegação */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 mt-32">
         {/* Personal Links Section - Now First */}
+        <div className="flex gap-2 items-center mb-4">
+          <span className="text-xs">Layout:</span>
+          <CardSizeSlider
+            value={cardSize === 'sm' ? 1 : cardSize === 'md' ? 2 : 3}
+            onChange={(v) => {
+              const size = v === 1 ? 'sm' : v === 2 ? 'md' : 'lg';
+              setCardSize(size);
+              localStorage.setItem('cardSize', size);
+            }}
+          />
+        </div>
         <CollapsibleSection
           title="Meus Links"
-          icon={<User className="w-4 h-4 text-orange-500" />}
+          icon={<User className="w-4 h-4 text-purple-500" />}
           count={shortcuts.length}
           defaultOpen={true}
           actions={
@@ -131,63 +132,38 @@ const Dashboard = () => {
           }
         >
           {shortcutsLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className={gridClass}>
               {[...Array(4)].map((_, i) => (
                 <div
                   key={i}
-                  className="h-40 bg-muted/20 rounded-xl animate-pulse"
+                  className={`${cardHeight} bg-muted/20 rounded-xl animate-pulse`}
                 />
               ))}
             </div>
-          ) : shortcuts.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          ) : (
+            <div className={`grid ${cardSize === 'sm' ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6' : cardSize === 'md' ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4' : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3'} gap-10 py-8 px-4 justify-items-center`}>
               {shortcuts.map((shortcut, index) => (
                 <motion.div
                   key={shortcut.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 * index, duration: 0.4 }}
+                  transition={{ delay: 0.1 * index, duration: 0.3 }}
                 >
                   <LinkCard
-                    title={shortcut.title}
-                    description={shortcut.description ?? undefined}
+                    title={shortcut.title ?? ''}
+                    description={shortcut.description ?? ''}
                     url={shortcut.url}
-                    icon={
-                      shortcut.icon ? (
-                        <span className="text-lg">{shortcut.icon}</span>
-                      ) : (
-                        <ExternalLink className="w-5 h-5" />
-                      )
-                    }
-                    category={shortcut.category ?? undefined}
+                    icon={shortcut.icon || undefined}
+                    category={shortcut.category || undefined}
                     isPersonal={true}
                     onEdit={() => handleEditShortcut(shortcut)}
                     onDelete={() => handleDeleteShortcut(shortcut.id)}
+                    cardSize={cardSize}
+                    className="p-6 group"
                   />
                 </motion.div>
               ))}
             </div>
-          ) : (
-            <motion.div
-              className="text-center py-12"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-            >
-              <div className="w-16 h-16 bg-muted/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Plus className="w-8 h-8 text-muted-foreground" />
-              </div>
-              <h3 className="text-lg font-semibold mb-3">Nenhum link personalizado</h3>
-              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                Comece adicionando seus links favoritos ao dashboard para acesso rápido
-              </p>
-              <AceternityButton
-                onClick={() => setModalOpen(true)}
-                icon={<Plus className="w-4 h-4" />}
-              >
-                Adicionar Primeiro Link
-              </AceternityButton>
-            </motion.div>
           )}
         </CollapsibleSection>
 
@@ -241,39 +217,47 @@ const Dashboard = () => {
           count={fixedLinks.length}
           defaultOpen={true}
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {fixedLinksLoading ? (
-              [...Array(4)].map((_, i) => (
+          {!isClintUser ? (
+            <div className="text-center py-12">
+              <div className="w-16 h-16 bg-muted/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <User className="w-8 h-8 text-muted-foreground" />
+              </div>
+              <h3 className="text-lg font-semibold mb-3">Acesso restrito</h3>
+              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                Faça login com um e-mail <b>@clint.digital</b> para visualizar os links do sistema.
+              </p>
+            </div>
+          ) : fixedLinksLoading ? (
+            <div className={gridClass}>
+              {[...Array(4)].map((_, i) => (
                 <div
                   key={i}
-                  className="h-40 bg-muted/20 rounded-xl animate-pulse"
+                  className={`${cardHeight} bg-muted/20 rounded-xl animate-pulse`}
                 />
-              ))
-            ) : (
-              fixedLinks.map((link, index) => (
+              ))}
+            </div>
+          ) : (
+            <div className={`grid ${cardSize === 'sm' ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6' : cardSize === 'md' ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4' : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3'} gap-10 py-8 px-4 justify-items-center`}>
+              {fixedLinks.map((link, index) => (
                 <motion.div
                   key={link.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 * index, duration: 0.4 }}
+                  transition={{ delay: 0.1 * index, duration: 0.3 }}
                 >
                   <LinkCard
                     title={link.title}
-                    description={link.description ?? undefined}
+                    description={link.description ?? ''}
                     url={link.url}
-                    icon={
-                      link.icon ? (
-                        <span className="text-lg">{link.icon}</span>
-                      ) : (
-                        <ExternalLink className="w-5 h-5" />
-                      )
-                    }
-                    category={link.category ?? undefined}
+                    icon={link.icon || undefined}
+                    category={link.category || undefined}
+                    cardSize={cardSize}
+                    className="p-6 group"
                   />
                 </motion.div>
-              ))
-            )}
-          </div>
+              ))}
+            </div>
+          )}
         </CollapsibleSection>
       </main>
 

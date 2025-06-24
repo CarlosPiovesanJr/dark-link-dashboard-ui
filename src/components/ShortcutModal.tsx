@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,7 +7,10 @@ import { AceternityInput } from "@/components/ui/aceternity-input";
 import { AceternityButton } from "@/components/ui/aceternity-button";
 import { AceternityCard } from "@/components/ui/aceternity-card";
 import { useShortcuts, Shortcut } from "@/hooks/useShortcuts";
-import { X, Plus, Edit, Link, Type, FileText, Tag } from "lucide-react";
+import { useCustomFolders } from "@/hooks/useCustomFolders";
+import { X, Plus, Edit, Link, Type, FileText, Tag, Folder } from "lucide-react";
+import Picker from '@emoji-mart/react';
+import data from '@emoji-mart/data';
 
 const shortcutSchema = z.object({
   title: z.string().min(1, "Título é obrigatório"),
@@ -16,6 +18,7 @@ const shortcutSchema = z.object({
   description: z.string().optional(),
   category: z.string().optional(),
   icon: z.string().optional(),
+  folder_id: z.string().optional().nullable(),
 });
 
 type ShortcutFormData = z.infer<typeof shortcutSchema>;
@@ -29,6 +32,8 @@ interface ShortcutModalProps {
 export const ShortcutModal = ({ isOpen, onClose, shortcut }: ShortcutModalProps) => {
   const [loading, setLoading] = useState(false);
   const { createShortcut, updateShortcut } = useShortcuts();
+  const { folders } = useCustomFolders();
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const {
     register,
@@ -36,17 +41,19 @@ export const ShortcutModal = ({ isOpen, onClose, shortcut }: ShortcutModalProps)
     formState: { errors },
     reset,
     setValue,
+    watch,
   } = useForm<ShortcutFormData>({
     resolver: zodResolver(shortcutSchema),
   });
 
   useEffect(() => {
     if (shortcut) {
-      setValue("title", shortcut.title);
-      setValue("url", shortcut.url);
+      setValue("title", shortcut.title || "");
+      setValue("url", shortcut.url || "");
       setValue("description", shortcut.description || "");
       setValue("category", shortcut.category || "");
       setValue("icon", shortcut.icon || "");
+      setValue("folder_id", shortcut.folder_id || "");
     } else {
       reset();
     }
@@ -54,7 +61,6 @@ export const ShortcutModal = ({ isOpen, onClose, shortcut }: ShortcutModalProps)
 
   const onSubmit = async (data: ShortcutFormData) => {
     setLoading(true);
-    
     try {
       const shortcutData = {
         title: data.title,
@@ -62,8 +68,8 @@ export const ShortcutModal = ({ isOpen, onClose, shortcut }: ShortcutModalProps)
         description: data.description,
         category: data.category,
         icon: data.icon,
+        folder_id: data.folder_id || null,
       };
-
       if (shortcut) {
         await updateShortcut(shortcut.id, shortcutData);
       } else {
@@ -74,7 +80,6 @@ export const ShortcutModal = ({ isOpen, onClose, shortcut }: ShortcutModalProps)
     } catch (error) {
       console.error("Error saving shortcut:", error);
     }
-    
     setLoading(false);
   };
 
@@ -110,11 +115,11 @@ export const ShortcutModal = ({ isOpen, onClose, shortcut }: ShortcutModalProps)
             <AceternityCard className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
                     {shortcut ? (
-                      <Edit className="w-5 h-5 text-orange-500" />
+                      <Edit className="w-5 h-5 text-purple-500" />
                     ) : (
-                      <Plus className="w-5 h-5 text-orange-500" />
+                      <Plus className="w-5 h-5 text-purple-500" />
                     )}
                   </div>
                   <div>
@@ -129,7 +134,6 @@ export const ShortcutModal = ({ isOpen, onClose, shortcut }: ShortcutModalProps)
                     </p>
                   </div>
                 </div>
-                
                 <button
                   onClick={handleClose}
                   className="p-2 rounded-lg hover:bg-secondary transition-colors"
@@ -171,13 +175,58 @@ export const ShortcutModal = ({ isOpen, onClose, shortcut }: ShortcutModalProps)
                   {...register("category")}
                 />
 
-                <AceternityInput
-                  label="Ícone (opcional)"
-                  icon={<span className="w-4 h-4">🔗</span>}
-                  placeholder="Ex: 📊, 🛠️, 📝"
-                  error={errors.icon?.message}
-                  {...register("icon")}
-                />
+                <div className="relative">
+                  <AceternityInput
+                    label="Ícone (opcional)"
+                    icon={<span className="w-4 h-4">🔗</span>}
+                    placeholder="Ex: 📊, 🛠️, 📝"
+                    error={errors.icon?.message}
+                    {...register("icon")}
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full bg-transparent hover:bg-accent transition-colors"
+                    onClick={() => setShowEmojiPicker((v) => !v)}
+                    tabIndex={-1}
+                    style={{ lineHeight: 1 }}
+                    aria-label="Escolher emoji"
+                  >
+                    <span className="text-xl">😀</span>
+                  </button>
+                  {showEmojiPicker && (
+                    <div className="absolute z-50 mt-2 right-0">
+                      <Picker
+                        data={data}
+                        onEmojiSelect={(emoji) => {
+                          setValue('icon', emoji.native);
+                          setShowEmojiPicker(false);
+                        }}
+                        theme="auto"
+                        previewPosition="none"
+                        searchPosition="none"
+                        style={{ width: '320px' }}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium flex items-center gap-1">
+                    <Folder className="w-4 h-4" /> Pasta
+                  </label>
+                  <select
+                    className="w-full border rounded px-3 py-2 bg-background"
+                    {...register("folder_id")}
+                    defaultValue=""
+                  >
+                    <option value="">Meus Links</option>
+                    {folders.map((folder) => (
+                      <option key={folder.id} value={folder.id}>
+                        {folder.icon ? `${folder.icon} ` : ''}{folder.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
                 <div className="flex gap-3 pt-4">
                   <AceternityButton

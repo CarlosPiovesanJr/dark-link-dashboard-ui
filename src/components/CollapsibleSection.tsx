@@ -41,14 +41,14 @@ export const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
           >
             <ChevronRight className="w-4 h-4 text-muted-foreground" />
           </motion.div>
-          <div className="w-8 h-8 bg-orange-500/10 rounded-lg flex items-center justify-center">
+          <div className="w-8 h-8 bg-purple-500/10 rounded-lg flex items-center justify-center">
             {icon}
           </div>
           <h2 className="text-xl font-bold group-hover:text-primary transition-colors">
             {title}
           </h2>
           {count !== undefined && (
-            <span className="px-3 py-1 bg-orange-500/10 text-orange-500 text-sm rounded-full font-medium">
+            <span className="px-3 py-1 bg-purple-500/10 text-purple-500 text-sm rounded-full font-medium">
               {count}
             </span>
           )}

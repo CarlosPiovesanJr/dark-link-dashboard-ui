@@ -110,11 +110,11 @@ export const FixedLinkModal = ({ isOpen, onClose, fixedLink }: FixedLinkModalPro
             <AceternityCard className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
                     {fixedLink ? (
-                      <Edit className="w-5 h-5 text-orange-500" />
+                      <Edit className="w-5 h-5 text-purple-500" />
                     ) : (
-                      <Plus className="w-5 h-5 text-orange-500" />
+                      <Plus className="w-5 h-5 text-purple-500" />
                     )}
                   </div>
                   <div>

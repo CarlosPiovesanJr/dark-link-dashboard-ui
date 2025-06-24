@@ -27,7 +27,7 @@ export const AceternityButton = ({
   type = "button",
 }: AceternityButtonProps) => {
   const variants = {
-    primary: "bg-orange-500 text-white hover:bg-orange-600 shadow-lg shadow-orange-500/25",
+    primary: "bg-purple-500 text-white hover:bg-purple-600 shadow-lg shadow-purple-500/25",
     secondary: "bg-blue-500 text-white hover:bg-blue-600 shadow-lg shadow-blue-500/25",
     outline: "border border-border bg-transparent hover:bg-accent hover:text-accent-foreground",
     ghost: "hover:bg-accent hover:text-accent-foreground"

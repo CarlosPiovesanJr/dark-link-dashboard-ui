@@ -1,4 +1,3 @@
-
 import React from "react";
 import { FloatingNav } from "@/components/ui/floating-navbar";
 import { ThemeToggle } from "./ThemeToggle";
@@ -64,7 +63,15 @@ export const MainNavigation: React.FC<MainNavigationProps> = ({ onNewLink, onNew
         <span className="text-xs text-muted-foreground hidden md:block">
           {user?.email?.split('@')[0]}
         </span>
-        <User className="w-4 h-4 text-muted-foreground" />
+        {user?.user_metadata?.avatar_url || user?.user_metadata?.picture ? (
+          <img
+            src={user.user_metadata.avatar_url || user.user_metadata.picture}
+            alt="Avatar"
+            className="w-7 h-7 rounded-full object-cover border border-border"
+          />
+        ) : (
+          <User className="w-4 h-4 text-muted-foreground" />
+        )}
       </div>
       
       <AceternityButton
@@ -83,7 +90,7 @@ export const MainNavigation: React.FC<MainNavigationProps> = ({ onNewLink, onNew
       navItems={navItems} 
       rightElement={rightElement}
       alwaysVisible={true}
-      className="bg-card/90 backdrop-blur-xl border-orange-500/20"
+      className="bg-card/90 backdrop-blur-xl border-purple-500/20"
     />
   );
 };

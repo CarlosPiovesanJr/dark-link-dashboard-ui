@@ -22,7 +22,7 @@ const AdminDashboard = () => {
       description: "Gerencie os links que aparecem para todos os usuários",
       icon: <LinkIcon className="w-6 h-6" />,
       path: "/admin/fixed-links",
-      color: "orange",
+      color: "purple",
       stats: "4 links ativos"
     },
     {
@@ -106,7 +106,7 @@ const AdminDashboard = () => {
         transition={{ delay: 0.3, duration: 0.5 }}
       >
         <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-          <Shield className="w-5 h-5 text-orange-500" />
+          <Shield className="w-5 h-5 text-purple-500" />
           Funções Administrativas
         </h3>
         
@@ -122,7 +122,7 @@ const AdminDashboard = () => {
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
-                      card.color === 'orange' ? 'bg-orange-500/10 text-orange-500' :
+                      card.color === 'purple' ? 'bg-purple-500/10 text-purple-500' :
                       card.color === 'blue' ? 'bg-blue-500/10 text-blue-500' :
                       card.color === 'green' ? 'bg-green-500/10 text-green-500' :
                       'bg-purple-500/10 text-purple-500'
@@ -130,7 +130,7 @@ const AdminDashboard = () => {
                       {card.icon}
                     </div>
                     <div>
-                      <h4 className="font-semibold text-foreground group-hover:text-orange-500 transition-colors">
+                      <h4 className="font-semibold text-foreground group-hover:text-purple-500 transition-colors">
                         {card.title}
                       </h4>
                       <p className="text-sm text-muted-foreground">
@@ -139,7 +139,7 @@ const AdminDashboard = () => {
                     </div>
                   </div>
                   
-                  <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-orange-500 transition-colors" />
+                  <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-purple-500 transition-colors" />
                 </div>
                 
                 <p className="text-sm text-muted-foreground mb-4">
@@ -169,7 +169,7 @@ const AdminDashboard = () => {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5, duration: 0.5 }}
       >
-        <AceternityCard className="p-6 bg-gradient-to-r from-orange-500/5 to-blue-500/5 border-orange-500/20">
+        <AceternityCard className="p-6 bg-gradient-to-r from-purple-500/5 to-blue-500/5 border-purple-500/20">
           <div className="flex items-center justify-between">
             <div>
               <h4 className="font-semibold text-foreground mb-2">Ações Rápidas</h4>

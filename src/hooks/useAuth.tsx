@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -76,6 +75,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signUp = async (email: string, password: string) => {
     try {
+      if (!email.endsWith('@clint.digital')) {
+        toast({
+          title: "E-mail não permitido",
+          description: "Use um e-mail @clint.digital para acessar.",
+          variant: "destructive",
+        });
+        return { error: { message: 'E-mail não permitido' } };
+      }
       const redirectUrl = `${window.location.origin}/`;
       
       const { error } = await supabase.auth.signUp({
@@ -118,6 +125,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           redirectTo: `${window.location.origin}/`
         }
       });
+
+      // Após o login, checar o usuário
+      setTimeout(async () => {
+        const session = (await supabase.auth.getSession()).data.session;
+        const email = session?.user?.email;
+        if (email && !email.endsWith('@clint.digital')) {
+          await signOut();
+          toast({
+            title: "Acesso negado",
+            description: "Apenas e-mails @clint.digital são permitidos.",
+            variant: "destructive",
+          });
+        }
+      }, 1000);
 
       if (error) {
         toast({

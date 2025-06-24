@@ -1,4 +1,3 @@
-
 // LinkBoard UI Theme Configuration
 export const theme = {
   colors: {
@@ -15,10 +14,10 @@ export const theme = {
         muted: 'hsl(220 9% 60%)',        // Medium gray
       },
       accent: {
-        orange: {
-          primary: 'hsl(25 95% 60%)',     // Warm orange
-          secondary: 'hsl(25 95% 50%)',   // Darker orange
-          light: 'hsl(25 95% 70%)',       // Light orange
+        purple: {
+          primary: 'hsl(265 80% 60%)',     // Roxo principal
+          secondary: 'hsl(265 80% 50%)',   // Roxo mais escuro
+          light: 'hsl(265 80% 70%)',       // Roxo claro
         },
         blue: {
           primary: 'hsl(210 80% 65%)',    // Soft blue
@@ -42,10 +41,10 @@ export const theme = {
         muted: 'hsl(220 13% 45%)',       // Medium gray
       },
       accent: {
-        orange: {
-          primary: 'hsl(25 95% 55%)',     // Orange
-          secondary: 'hsl(25 95% 45%)',   // Darker orange
-          light: 'hsl(25 95% 65%)',       // Light orange
+        purple: {
+          primary: 'hsl(265 80% 60%)',     // Roxo principal
+          secondary: 'hsl(265 80% 50%)',   // Roxo mais escuro
+          light: 'hsl(265 80% 70%)',       // Roxo claro
         },
         blue: {
           primary: 'hsl(210 80% 60%)',    // Blue

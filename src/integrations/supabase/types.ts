@@ -9,124 +9,7 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      avaliacoes_enviadas: {
-        Row: {
-          data: string
-          enviado_em: string | null
-          id: number
-          id_grupo: string
-        }
-        Insert: {
-          data: string
-          enviado_em?: string | null
-          id?: number
-          id_grupo: string
-        }
-        Update: {
-          data?: string
-          enviado_em?: string | null
-          id?: number
-          id_grupo?: string
-        }
-        Relationships: []
-      }
-      chamados_whatsapp: {
-        Row: {
-          atendente: string
-          chave_unica: string
-          created_at: string
-          data: string
-          grupo: string
-          id: number
-          id_grupo: string | null
-          telefone: string
-        }
-        Insert: {
-          atendente: string
-          chave_unica: string
-          created_at?: string
-          data: string
-          grupo: string
-          id?: number
-          id_grupo?: string | null
-          telefone: string
-        }
-        Update: {
-          atendente?: string
-          chave_unica?: string
-          created_at?: string
-          data?: string
-          grupo?: string
-          id?: number
-          id_grupo?: string | null
-          telefone?: string
-        }
-        Relationships: []
-      }
-      formulario_suporte: {
-        Row: {
-          created_at: string
-          email: string | null
-          empresa: string | null
-          id: number
-          name: string | null
-          nota: number | null
-          notes: string | null
-          phone: number | null
-        }
-        Insert: {
-          created_at?: string
-          email?: string | null
-          empresa?: string | null
-          id?: number
-          name?: string | null
-          nota?: number | null
-          notes?: string | null
-          phone?: number | null
-        }
-        Update: {
-          created_at?: string
-          email?: string | null
-          empresa?: string | null
-          id?: number
-          name?: string | null
-          nota?: number | null
-          notes?: string | null
-          phone?: number | null
-        }
-        Relationships: []
-      }
-      satisfacao: {
-        Row: {
-          avaliacao: string | null
-          created_at: string
-          grupo: string | null
-          id: number
-          nota_convertida: number | null
-          participantPhone: string | null
-          usuario: string | null
-        }
-        Insert: {
-          avaliacao?: string | null
-          created_at?: string
-          grupo?: string | null
-          id?: number
-          nota_convertida?: number | null
-          participantPhone?: string | null
-          usuario?: string | null
-        }
-        Update: {
-          avaliacao?: string | null
-          created_at?: string
-          grupo?: string | null
-          id?: number
-          nota_convertida?: number | null
-          participantPhone?: string | null
-          usuario?: string | null
-        }
-        Relationships: []
-      }
-      shortcuts: {
+      fixed_links: {
         Row: {
           category: string | null
           created_at: string | null
@@ -134,8 +17,8 @@ export type Database = {
           icon: string | null
           id: string
           title: string
+          updated_at: string | null
           url: string
-          user_id: string | null
         }
         Insert: {
           category?: string | null
@@ -144,8 +27,8 @@ export type Database = {
           icon?: string | null
           id?: string
           title: string
+          updated_at?: string | null
           url: string
-          user_id?: string | null
         }
         Update: {
           category?: string | null
@@ -154,75 +37,85 @@ export type Database = {
           icon?: string | null
           id?: string
           title?: string
+          updated_at?: string | null
           url?: string
+        }
+        Relationships: []
+      }
+      folders: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          icon: string | null
+          id: string
+          name: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
           user_id?: string | null
         }
         Relationships: []
       }
-      suporte_cards: {
+      links: {
         Row: {
+          category: string | null
           created_at: string | null
-          data: string | null
-          id: number
-          link_do_card_ct: string | null
-          link_do_card_devel: string | null
-          nome_do_grupo: string | null
-          owner_id: string | null
-          responsavel: string | null
-          resumo: string | null
-          retorno: string | null
-          status: string | null
+          description: string | null
+          folder_id: string | null
+          icon: string | null
+          id: string
+          title: string | null
+          url: string
+          user_id: string | null
         }
         Insert: {
+          category?: string | null
           created_at?: string | null
-          data?: string | null
-          id?: number
-          link_do_card_ct?: string | null
-          link_do_card_devel?: string | null
-          nome_do_grupo?: string | null
-          owner_id?: string | null
-          responsavel?: string | null
-          resumo?: string | null
-          retorno?: string | null
-          status?: string | null
+          description?: string | null
+          folder_id?: string | null
+          icon?: string | null
+          id?: string
+          title?: string | null
+          url: string
+          user_id?: string | null
         }
         Update: {
+          category?: string | null
           created_at?: string | null
-          data?: string | null
-          id?: number
-          link_do_card_ct?: string | null
-          link_do_card_devel?: string | null
-          nome_do_grupo?: string | null
-          owner_id?: string | null
-          responsavel?: string | null
-          resumo?: string | null
-          retorno?: string | null
-          status?: string | null
+          description?: string | null
+          folder_id?: string | null
+          icon?: string | null
+          id?: string
+          title?: string | null
+          url?: string
+          user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "links_folder_id_fkey"
+            columns: ["folder_id"]
+            isOneToOne: false
+            referencedRelation: "folders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
-      relatorio_interacoes_diario: {
-        Row: {
-          atendente: string | null
-          data: string | null
-          grupo: string | null
-          telefone: string | null
-          total_interacoes: number | null
-        }
-        Relationships: []
-      }
-      relatorio_interacoes_diario_atendimento: {
-        Row: {
-          atendente: string | null
-          data: string | null
-          telefone: string | null
-          total_atendimentos: number | null
-          total_ponderado: number | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       [_ in never]: never

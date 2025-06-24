@@ -51,6 +51,8 @@ interface LinkCardProps {
   onEdit?: () => void;
   onDelete?: () => void;
   isPersonal?: boolean;
+  cardSize?: 'sm' | 'md' | 'lg';
+  className?: string;
 }
 
 export const LinkCard = ({ 
@@ -61,25 +63,30 @@ export const LinkCard = ({
   category, 
   onEdit, 
   onDelete,
-  isPersonal = false 
+  isPersonal = false,
+  cardSize = 'md',
+  className = '',
 }: LinkCardProps) => {
   const handleClick = () => {
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
+  const cardSquareSize =
+    cardSize === 'sm' ? 'w-44 h-44' :
+    cardSize === 'md' ? 'w-64 h-64' :
+    'w-80 h-80';
+
+  // Classes dinâmicas por tamanho
+  const iconSize = cardSize === 'sm' ? 'w-8 h-8' : cardSize === 'md' ? 'w-10 h-10' : 'w-14 h-14';
+  const titleSize = cardSize === 'sm' ? 'text-sm' : cardSize === 'md' ? 'text-base' : 'text-lg';
+  const descSize = cardSize === 'sm' ? 'text-xs' : cardSize === 'md' ? 'text-sm' : 'text-base';
+  const btnSize = cardSize === 'sm' ? 'text-xs py-1.5 px-2.5' : cardSize === 'md' ? 'text-sm py-2 px-3' : 'text-base py-3 px-4';
+  const padding = cardSize === 'sm' ? 'p-3' : 'p-8';
+  const gap = cardSize === 'sm' ? 'gap-3' : cardSize === 'md' ? 'gap-4' : 'gap-6';
+
   return (
-    <motion.div
-      className="relative h-full"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      whileHover={{ 
-        y: -4, 
-        scale: 1.02,
-        transition: { duration: 0.2 }
-      }}
-    >
-      <div className="relative h-full rounded-xl border border-border/50 p-2 bg-card/50 backdrop-blur-sm overflow-hidden group">
+    <AceternityCard className={`group ${cardSquareSize.replace(/p-\d+/g, '')} ${className?.replace(/p-\d+/g, '')}`.trim()}>
+      <div className="relative rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm overflow-hidden group w-full h-full">
         <GlowingEffect
           spread={40}
           glow={true}
@@ -87,27 +94,26 @@ export const LinkCard = ({
           proximity={64}
           inactiveZone={0.01}
         />
-        
-        <div className="relative flex h-full flex-col justify-between gap-4 p-4">
+        <div className={`relative flex flex-col ${gap} h-full p-4`}>
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
               {icon && (
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                <div className={`${iconSize} rounded-lg bg-primary/10 flex items-center justify-center text-primary`}>
                   {icon}
                 </div>
               )}
-              <div>
-                <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors text-sm">
+              <div className="w-full">
+                <h3 className={`font-semibold text-foreground group-hover:text-primary transition-colors ${titleSize} break-words whitespace-normal leading-tight line-clamp-2`} title={title}>
                   {title}
                 </h3>
-                {category && (
-                  <span className="text-xs text-muted-foreground bg-muted/50 px-2 py-1 rounded-full mt-1 inline-block">
+                {/* Categoria só aparece a partir de 'md' */}
+                {category && cardSize !== 'sm' && (
+                  <span className="text-xs text-muted-foreground bg-muted/50 px-2 py-1 rounded-full mt-1 inline-block truncate max-w-full" title={category}>
                     {category}
                   </span>
                 )}
               </div>
             </div>
-            
             {isPersonal && (onEdit || onDelete) && (
               <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 {onEdit && (
@@ -135,22 +141,19 @@ export const LinkCard = ({
               </div>
             )}
           </div>
-          
-          {description && (
-            <p className="text-xs text-muted-foreground line-clamp-2 flex-1">
-              {description}
-            </p>
+          {/* Descrição só aparece a partir de 'md' */}
+          {description && (cardSize === 'md' || cardSize === 'lg') && (
+            <p className={`${descSize} text-muted-foreground break-words whitespace-normal leading-tight line-clamp-3`} title={description}>{description}</p>
           )}
-          
           <button
             onClick={handleClick}
-            className="w-full bg-primary/90 hover:bg-primary text-primary-foreground text-xs py-2 px-3 rounded-lg transition-colors font-medium"
+            className={`w-full bg-primary/90 hover:bg-primary text-primary-foreground rounded-lg transition-colors font-medium mt-auto ${btnSize} truncate`}
           >
             Acessar
           </button>
         </div>
       </div>
-    </motion.div>
+    </AceternityCard>
   );
 };
 

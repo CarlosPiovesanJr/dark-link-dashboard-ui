@@ -1,18 +1,12 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 import { useToast } from './use-toast';
+import type { Database } from '@/integrations/supabase/types';
 
-export interface CustomFolder {
-  id: string;
-  name: string;
-  description?: string | null;
-  icon?: string | null;
-  user_id?: string | null;
-  created_at?: string | null;
-  updated_at?: string | null;
-}
+export type CustomFolder = Database['public']['Tables']['folders']['Row'];
+export type CustomFolderInsert = Database['public']['Tables']['folders']['Insert'];
+export type CustomFolderUpdate = Database['public']['Tables']['folders']['Update'];
 
 export const useCustomFolders = () => {
   const [folders, setFolders] = useState<CustomFolder[]>([]);
@@ -23,83 +17,78 @@ export const useCustomFolders = () => {
   const fetchFolders = async () => {
     try {
       setLoading(true);
-      
       if (!user) {
         setFolders([]);
         return;
       }
-
-      // Por enquanto, vamos usar um array local. Em produção, isso viria de um banco de dados
-      const localFolders = JSON.parse(localStorage.getItem(`custom-folders-${user.id}`) || '[]');
-      setFolders(localFolders);
+      const { data, error } = await supabase
+        .from('folders')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      setFolders(data || []);
     } catch (error: any) {
       console.error('Error fetching custom folders:', error);
       toast({
-        title: "Erro ao carregar pastas",
+        title: 'Erro ao carregar pastas',
         description: error.message,
-        variant: "destructive",
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
     }
   };
 
-  const createFolder = async (folder: Omit<CustomFolder, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => {
+  const createFolder = async (folder: Omit<CustomFolderInsert, 'user_id' | 'created_at' | 'id'>) => {
     try {
       if (!user) throw new Error('Usuário não autenticado');
-
-      const newFolder: CustomFolder = {
-        ...folder,
-        id: `folder-${Date.now()}`,
-        user_id: user.id,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
-
-      const updatedFolders = [newFolder, ...folders];
-      setFolders(updatedFolders);
-      localStorage.setItem(`custom-folders-${user.id}`, JSON.stringify(updatedFolders));
-      
+      const { data, error } = await supabase
+        .from('folders')
+        .insert([{ ...folder, user_id: user.id }])
+        .select()
+        .single();
+      if (error) throw error;
+      setFolders((prev) => [data, ...prev]);
       toast({
-        title: "Pasta criada com sucesso!",
+        title: 'Pasta criada com sucesso!',
         description: `${folder.name} foi adicionada às suas pastas.`,
       });
-
-      return newFolder;
+      return data;
     } catch (error: any) {
       console.error('Error creating folder:', error);
       toast({
-        title: "Erro ao criar pasta",
+        title: 'Erro ao criar pasta',
         description: error.message,
-        variant: "destructive",
+        variant: 'destructive',
       });
       throw error;
     }
   };
 
-  const updateFolder = async (id: string, updates: Partial<CustomFolder>) => {
+  const updateFolder = async (id: string, updates: CustomFolderUpdate) => {
     try {
       if (!user) throw new Error('Usuário não autenticado');
-      
-      const updatedFolders = folders.map(folder =>
-        folder.id === id ? { ...folder, ...updates, updated_at: new Date().toISOString() } : folder
-      );
-      
-      setFolders(updatedFolders);
-      localStorage.setItem(`custom-folders-${user.id}`, JSON.stringify(updatedFolders));
-
+      const { data, error } = await supabase
+        .from('folders')
+        .update(updates)
+        .eq('id', id)
+        .eq('user_id', user.id)
+        .select()
+        .single();
+      if (error) throw error;
+      setFolders((prev) => prev.map((folder) => (folder.id === id ? data : folder)));
       toast({
-        title: "Pasta atualizada!",
-        description: "As alterações foram salvas com sucesso.",
+        title: 'Pasta atualizada!',
+        description: 'As alterações foram salvas com sucesso.',
       });
-
-      return updatedFolders.find(f => f.id === id);
+      return data;
     } catch (error: any) {
       console.error('Error updating folder:', error);
       toast({
-        title: "Erro ao atualizar pasta",
+        title: 'Erro ao atualizar pasta',
         description: error.message,
-        variant: "destructive",
+        variant: 'destructive',
       });
       throw error;
     }
@@ -108,21 +97,23 @@ export const useCustomFolders = () => {
   const deleteFolder = async (id: string) => {
     try {
       if (!user) throw new Error('Usuário não autenticado');
-      
-      const updatedFolders = folders.filter(folder => folder.id !== id);
-      setFolders(updatedFolders);
-      localStorage.setItem(`custom-folders-${user.id}`, JSON.stringify(updatedFolders));
-      
+      const { error } = await supabase
+        .from('folders')
+        .delete()
+        .eq('id', id)
+        .eq('user_id', user.id);
+      if (error) throw error;
+      setFolders((prev) => prev.filter((folder) => folder.id !== id));
       toast({
-        title: "Pasta removida",
-        description: "A pasta foi removida da sua lista.",
+        title: 'Pasta removida',
+        description: 'A pasta foi removida da sua lista.',
       });
     } catch (error: any) {
       console.error('Error deleting folder:', error);
       toast({
-        title: "Erro ao remover pasta",
+        title: 'Erro ao remover pasta',
         description: error.message,
-        variant: "destructive",
+        variant: 'destructive',
       });
       throw error;
     }
@@ -130,6 +121,7 @@ export const useCustomFolders = () => {
 
   useEffect(() => {
     fetchFolders();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   return {
