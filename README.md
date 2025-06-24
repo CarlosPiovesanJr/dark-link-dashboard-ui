@@ -169,7 +169,7 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 ## 👨‍💻 Autor
 
-Desenvolvido por [Seu Nome](https://github.com/seu-usuario)
+Desenvolvido por [Carlos Piovesan Jr](https://github.com/carlospiovesanjr)
 
 ## 🙏 Agradecimentos
 
